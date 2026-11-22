@@ -1,0 +1,17 @@
+const fs=require('fs');
+const html=fs.readFileSync(__dirname+'/../app/src/main/assets/index.html','utf8');
+const tests=[
+ ['four item slots',html.includes('length:4')],
+ ['six cue words',html.includes("cues:['りんご','バナナ','時計','鍵','','']")],
+ ['local storage persistence',html.includes('localStorage.getItem(STORE')&&html.includes('localStorage.setItem(STORE')],
+ ['cue recognition logic',html.includes('function onCue(text)')&&html.includes('function prepareReveal()')],
+ ['heart tap reveal',html.includes('function heartAction()')&&html.includes('onclick=heartAction')],
+ ['device orientation hook',html.includes('deviceorientation')],
+ ['spoken reset implemented',html.includes('function isResetCue(text)')&&html.includes('if(isResetCue(text)){resetItems();return;}')&&html.includes('items:Array.from')&&html.includes('if(!saved)data=previous')],
+ ['special photo separate upload',html.includes('specialFile')&&html.includes('specialImage')],
+ ['special cue and message fields',html.includes('specialCue')&&html.includes('specialMessage')],
+ ['bridge events wired',html.includes('mindmagic-cue-text')&&html.includes('mindmagic-speech-status')],
+ ['cue thumbnails',html.includes('cueThumb')&&html.includes('item.image')]
+];
+for(const [name,ok] of tests)console.log(`${ok?'PASS':'FAIL'} ${name}`);
+const fail=tests.filter(t=>!t[1]).length;console.log(`${tests.length-fail}/${tests.length} passed`);process.exit(fail?1:0);

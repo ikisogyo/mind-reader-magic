@@ -1,0 +1,11 @@
+const fs=require('fs'),assert=require('assert');
+const helper=fs.readFileSync('app/src/main/java/jp/mindmagic/speech/SpeechRecognitionHelper.java','utf8');
+const activity=fs.readFileSync('app/src/main/java/jp/mindmagic/app/MainActivity.java','utf8');
+assert(helper.includes('try {\n        recognizer = SpeechRecognizer.createSpeechRecognizer(context);'),'speech recognizer creation is guarded');
+assert(helper.includes('if (recognizer == null) {\n          callback.onError("音声認識サービスを初期化できませんでした", -1004);'),'null recognizer initialization failure is reported');
+assert(helper.includes('catch (RuntimeException ex) {\n        // Service creation/listener setup can fail on some devices.'),'creation/listener setup exceptions are caught');
+assert(helper.includes('try { recognizer.destroy(); } catch (RuntimeException ignored) { }'),'partially created recognizer is safely destroyed');
+assert(helper.includes('recognizer = null;\n        }\n        callback.onError("音声認識サービスを初期化できませんでした: " + ex.getMessage(), -1004);'),'failed recognizer is cleared and UI receives recoverable error');
+assert(activity.includes('results != null && results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED'),'permission result callback tolerates null results');
+assert(fs.readFileSync('app/build.gradle','utf8').includes("versionCode 192; versionName '0.3.192'"),'version updated');
+console.log('v170 speech initialization recovery checks: 7 passed');

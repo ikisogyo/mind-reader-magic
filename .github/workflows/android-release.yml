@@ -1,0 +1,85 @@
+name: Android APK release (debug build)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Set up Gradle 8.7
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Accept Android SDK licenses
+        run: |
+          set +e
+          yes | sdkmanager --licenses
+          sdkmanager_status=${PIPESTATUS[1]}
+          set -e
+          exit "$sdkmanager_status"
+      - name: Install Android platform and build tools
+        run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0' 'platform-tools'
+      - name: Verify release tag matches app version
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: python3 verify_release_version.py
+      - name: Source preflight
+        run: python3 build_preflight.py
+      - name: Build debug APK (not production-signed)
+        run: gradle --no-daemon --stacktrace assembleDebug
+      - name: Verify APK and create checksum
+        id: verify-apk
+        run: |
+          set -e
+          test -s app/build/outputs/apk/debug/app-debug.apk
+          cp app/build/outputs/apk/debug/app-debug.apk mindmagic-debug.apk
+          sha256sum mindmagic-debug.apk > mindmagic-debug.apk.sha256
+          echo "verified=true" >> "$GITHUB_OUTPUT"
+      - name: Run regression tests after APK build
+        run: |
+          set -e
+          for test in tests/*.cjs; do
+            echo "== $test =="
+            node "$test"
+          done
+      - name: Upload APK artifact for manual workflow runs
+        if: always() && github.event_name == 'workflow_dispatch' && steps.verify-apk.outputs.verified == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: mindmagic-debug-apk-manual
+          path: |
+            mindmagic-debug.apk
+            mindmagic-debug.apk.sha256
+          if-no-files-found: error
+          retention-days: 14
+      - name: Publish clearly labeled debug APK GitHub Release
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && steps.verify-apk.outputs.verified == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          name: MindMagic Debug APK ${{ github.ref_name }}
+          generate_release_notes: true
+          prerelease: true
+          files: |
+            mindmagic-debug.apk
+            mindmagic-debug.apk.sha256

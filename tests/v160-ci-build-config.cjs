@@ -1,0 +1,14 @@
+const fs=require('fs');
+const workflow=fs.readFileSync('.github/workflows/android-build.yml','utf8');
+const preflight=fs.readFileSync('build_preflight.py','utf8');
+if(!workflow.includes('sdkmanager --licenses')) throw new Error('CI must accept Android SDK licenses');
+if(!workflow.includes("platforms;android-35")) throw new Error('CI must install Android 35 platform');
+if(!workflow.includes('gradle --no-daemon --stacktrace assembleDebug')) throw new Error('CI must build APK');
+if(!workflow.includes('upload-artifact@v4')) throw new Error('CI must upload APK artifact');
+if(!preflight.includes('sys.exit(0 if all(ok for _,ok,_ in checks) else 1)')) throw new Error('preflight must return failure on failed checks');
+console.log('PASS CI accepts SDK licenses');
+console.log('PASS CI installs SDK platform');
+console.log('PASS CI builds APK');
+console.log('PASS CI uploads APK');
+console.log('PASS preflight blocks on failed checks');
+console.log('5/5 passed');

@@ -1,0 +1,10 @@
+const fs=require('fs'),assert=require('assert');
+const src=fs.readFileSync('app/src/main/java/jp/mindmagic/speech/SpeechRecognitionHelper.java','utf8');
+const start=src.indexOf('public void stop()'); const end=src.indexOf('public void cancel()',start); const stop=start>=0&&end>start?src.slice(start,end):'';
+assert(stop,'stop() exists');
+assert(stop.includes('recognitionActive = false;'),'stop clears active recognition guard');
+assert(stop.includes('recognizer.cancel();'),'stop cancels active session');
+assert(stop.includes('setListening(false);'),'stop clears UI listening state');
+assert(!stop.includes('stopListening()'),'stop no longer leaves recognizer awaiting final callback');
+assert(/versionCode 192; versionName '0\.3\.192'/.test(fs.readFileSync('app/build.gradle','utf8')),'version metadata updated');
+console.log('v0.3.192 stop/restart checks: 5 passed');

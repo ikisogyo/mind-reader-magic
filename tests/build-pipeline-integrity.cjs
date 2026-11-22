@@ -1,0 +1,23 @@
+const fs = require('fs');
+const path = require('path');
+const root = path.resolve(__dirname, '..');
+const build = fs.readFileSync(path.join(root, '.github/workflows/android-build.yml'), 'utf8');
+const release = fs.readFileSync(path.join(root, '.github/workflows/android-release.yml'), 'utf8');
+const gradle = fs.readFileSync(path.join(root, 'app/build.gradle'), 'utf8');
+const upload = fs.readFileSync(path.join(root, 'upload-source-to-github.ps1'), 'utf8');
+function assert(condition, message) { if (!condition) throw new Error(message); }
+assert(build.includes("branches: [ main, master ]"), 'Build workflow must trigger for main/master pushes');
+assert(build.includes('workflow_dispatch:'), 'Build workflow must allow manual runs');
+assert(build.includes("gradle-version: '8.7'"), 'Build workflow Gradle version missing');
+assert(build.includes("'platforms;android-35'"), 'Android platform 35 must be installed in CI');
+assert(build.includes('gradle --no-daemon --stacktrace assembleDebug'), 'Debug APK build command missing');
+assert(build.includes('app-debug.apk.sha256'), 'Build artifact checksum must be uploaded');
+assert(build.includes('mindmagic-debug-apk'), 'APK artifact name missing');
+assert(release.includes("tags:\n      - 'v*'"), 'Release workflow must trigger on version tags');
+assert(release.includes('verify_release_version.py'), 'Release workflow must verify tag/version alignment');
+assert(release.includes('mindmagic-debug.apk.sha256'), 'Release checksum asset missing');
+const match = gradle.match(/versionName\s+'([^']+)'/);
+assert(match, 'App versionName missing');
+assert(release.includes('verify_release_version.py'), 'Tag/version guard must remain in release pipeline');
+assert(upload.includes('git push -u origin main'), 'Source upload helper must push main to trigger CI');
+console.log('PASS build pipeline integrity: workflows, SDK/Gradle config, artifact/checksum, release guard, upload helper');

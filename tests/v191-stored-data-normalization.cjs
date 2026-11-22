@@ -1,0 +1,13 @@
+const fs=require('fs'),assert=require('assert');
+const html=fs.readFileSync('app/src/main/assets/index.html','utf8');
+function extract(name){const start=html.indexOf(`function ${name}(`);assert(start>=0,`${name} exists`);let brace=html.indexOf('{',start),depth=0;for(let i=brace;i<html.length;i++){if(html[i]==='{')depth++;else if(html[i]==='}')depth--;if(depth===0)return html.slice(start,i+1);}throw Error(`cannot extract ${name}`)}
+const normalize=extract('normalizeStoredData');
+function run(v){const context={Array};require('vm').runInNewContext(`${normalize}; normalizeStoredData(input)`,{...context,input:v});}
+const defaults=require('vm').runInNewContext(`${normalize}; normalizeStoredData(null)`);
+assert.strictEqual(defaults.items.length,4,'default always has four item slots');assert.strictEqual(defaults.cues.length,6,'default always has six cues');
+const malformed={items:[{name:12,image:null},null,{name:'C',image:'img'}, {name:'D',image:'d'}, {name:'extra'}],cues:['one',false,'three'],specialCue:7,specialMessage:null,specialImage:99};
+const normalized=require('vm').runInNewContext(`${normalize}; normalizeStoredData(input)`,{input:malformed,Array});
+assert.strictEqual(normalized.items.length,4,'extra slots discarded');assert.strictEqual(normalized.items[0].name,'','invalid item name safely replaced');assert.strictEqual(normalized.items[1].image,'','null item safely replaced');assert.strictEqual(normalized.items[2].image,'img','valid image retained');assert.strictEqual(normalized.cues.length,6,'short cue arrays padded');assert.strictEqual(normalized.cues[0],'one','valid cue retained');assert.strictEqual(normalized.cues[1],'バナナ','invalid cue filled with default');assert.strictEqual(normalized.specialCue,'特別写真','invalid special cue uses default');assert.strictEqual(normalized.specialMessage,'あなたの心に浮かんだものを、私は感じ取ります。','invalid special message uses default');assert.strictEqual(normalized.specialImage,'','invalid special image cleared');
+const valid={items:Array.from({length:4},(_,i)=>({name:`Item${i}`,image:`img${i}`})),cues:['a','b','c','d','e','f'],specialCue:'photo cue',specialMessage:'message',specialImage:'photo'};
+const good=require('vm').runInNewContext(`${normalize}; normalizeStoredData(input)`,{input:valid,Array});assert.deepStrictEqual(Array.from(good.items,x=>x.name),['Item0','Item1','Item2','Item3']);assert.deepStrictEqual(Array.from(good.cues),valid.cues);assert.strictEqual(good.specialImage,'photo','valid special photo preserved');
+console.log('v191 stored-data normalization: 12 checks passed');

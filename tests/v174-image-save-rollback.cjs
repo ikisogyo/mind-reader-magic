@@ -1,0 +1,11 @@
+const fs=require('fs'),assert=require('assert'),vm=require('vm');
+const html=fs.readFileSync('app/src/main/assets/index.html','utf8');
+const helper=html.match(/function commitImage\(target,key,value\)\{[^}]+\}/);
+assert(helper,'commitImage helper exists');
+const success=vm.runInNewContext('('+helper[0]+')',{save:()=>true});
+const item={image:'old'};assert.strictEqual(success(item,'image','new'),true);assert.strictEqual(item.image,'new','successful write keeps new image');
+const failure=vm.runInNewContext('('+helper[0]+')',{save:()=>false});
+const failedItem={image:'old'};assert.strictEqual(failure(failedItem,'image','candidate'),false);assert.strictEqual(failedItem.image,'old','failed save rolls back prior image');
+const special={specialImage:'previous'};assert.strictEqual(failure(special,'specialImage','candidate'),false);assert.strictEqual(special.specialImage,'previous','special photo also rolls back');
+assert(/versionCode 192/.test(fs.readFileSync('app/build.gradle','utf8')),'versionCode 192');assert(/versionName '0\.3\.192'/.test(fs.readFileSync('app/build.gradle','utf8')),'versionName 0.3.192');
+console.log('v174 image save rollback: 9 checks passed');

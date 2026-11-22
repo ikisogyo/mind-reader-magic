@@ -1,0 +1,11 @@
+const fs=require('fs');
+const workflow=fs.readFileSync('.github/workflows/android-build.yml','utf8');
+if(!workflow.includes('tee build-debug.log')) throw new Error('Build output must be captured');
+if(!workflow.includes('if: failure()')) throw new Error('Failure diagnostics must upload on failure');
+if(!workflow.includes('mindmagic-build-diagnostics')) throw new Error('Diagnostics artifact must have a stable name');
+if(!workflow.includes('app/build/reports/**')) throw new Error('Gradle reports must be included');
+console.log('PASS build log captured');
+console.log('PASS failure-only diagnostics upload configured');
+console.log('PASS diagnostics artifact name present');
+console.log('PASS Gradle report path included');
+console.log('4/4 passed');
