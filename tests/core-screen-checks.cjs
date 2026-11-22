@@ -1,7 +1,9 @@
 const fs=require('fs');
 const html=fs.readFileSync(__dirname+'/../app/src/main/assets/index.html','utf8');
 const tests=[
- ['four item slots',html.includes('length:4')],
+ ['six internal item slots',html.includes('length:6')],
+ ['settings contain no item-registration fields',!html.includes('id="itemFields"')&&!html.includes('itemName'+i)],
+ ['special photo is above cue-word settings',html.indexOf('特別写真（最上部）')<html.indexOf('判定用の言葉（6個）')],
  ['six cue words',html.includes("cues:['りんご','バナナ','時計','鍵','','']")],
  ['local storage persistence',html.includes('localStorage.getItem(STORE')&&html.includes('localStorage.setItem(STORE')],
  ['cue recognition logic',html.includes('function onCue(text)')&&html.includes('function prepareReveal()')],
