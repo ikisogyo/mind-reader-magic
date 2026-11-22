@@ -31,6 +31,8 @@ jobs:
           gradle-version: '8.7'
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
       - name: Accept Android SDK licenses
         # Keep the pipeline's exit status from sdkmanager (the last command).
         # pipefail can turn the expected SIGPIPE from `yes` into a false failure.
@@ -39,7 +41,7 @@ jobs:
           yes | sdkmanager --licenses
           sdkmanager_status=${PIPESTATUS[1]}
           set -e
-          exit "$sdkmanager_status"
+          exit "${sdkmanager_status}"
       - name: Install Android platform and build tools
         run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0' 'platform-tools'
       - name: Verify toolchain
