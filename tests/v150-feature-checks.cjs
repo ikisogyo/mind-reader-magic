@@ -1,8 +1,8 @@
 const fs=require('fs'),vm=require('vm');const html=fs.readFileSync('app/src/main/assets/index.html','utf8');
 const checks=[
- ['4 object slots',html.includes('length:4')],
+ ['6 object slots',html.includes('length:6')],
  ['6 cue slots',html.includes("cues:['りんご','バナナ','時計','鍵','','']")&&html.includes('data.cues.forEach')],
- ['cue thumbnails',html.includes('cueThumb')&&html.includes('data.items[i%4]?.image')],
+ ['cue thumbnails',html.includes('cueThumb')&&html.includes('data.items[i]?.image')],
  ['special photo cue/message',html.includes('specialCue')&&html.includes('specialMessage')],
  ['reset retains cues',html.includes('data.cues')&&html.includes('判定用の言葉・特別写真の設定は保持')],
  ['cue-before-reveal gate',html.includes('if(!pending||revealed)return')],
