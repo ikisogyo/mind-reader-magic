@@ -44,9 +44,9 @@ function nextRound(){pending=null;revealed=false;document.getElementById('result
 function heartAction(){if(pending&&!revealed)reveal();}
 function startListen(){if(window.MindMagicSpeech){listening=true;window.MindMagicSpeech.start();}}
 function stopListen(){if(window.MindMagicSpeech)window.MindMagicSpeech.stop();listening=false;}
-window.addEventListener('mindmagic-cue-text',e=>onCue(e.detail?.text));window.addEventListener('mindmagic-speech-status',e=>{let d=e.detail||{};if(d.type==='error')stopListen();});document.getElementById('heart').onclick=heartAction;document.getElementById('secretTapZone').addEventListener('click',handleSecretTap);
+window.addEventListener('mindmagic-cue-text',e=>onCue(e.detail?.text));window.addEventListener('mindmagic-speech-status',e=>{let d=e.detail||{};if(d.type==='error'){stopListen();return;}if(d.type==='result'&&!pending&&!revealed){startListen();}});document.getElementById('heart').onclick=heartAction;document.getElementById('secretTapZone').addEventListener('click',handleSecretTap);
 window.addEventListener('deviceorientation',e=>{const el=document.getElementById('tiltStatus');if(el&&typeof e.beta==='number'&&typeof e.gamma==='number')el.textContent='傾き：前後 '+Math.round(e.beta)+'° ／ 左右 '+Math.round(e.gamma)+'°';});
 // Optional device tilt: face-down gesture (screen orientation Z-axis near 180 degrees).
 window.addEventListener('deviceorientation',e=>{if(typeof e.beta!=='number')return;const faceDown=Math.abs(e.beta)>145,faceUp=Math.abs(e.beta)<35;if(pending&&!revealed&&faceDown){reveal();return;}if(revealed&&faceUp){nextRound();}});
-load();renderSettings();updateCountDots();updateNetworkStatus();
+load();renderSettings();updateCountDots();updateNetworkStatus();startListen();
 </script></body></html>
