@@ -59,8 +59,6 @@ public class MainActivity extends Activity {
   // Stop microphone recognition when the activity leaves the foreground. This avoids
   // unexpectedly continuing to listen while the user switches apps or locks the screen.
   @Override public void onStop() {
-    // Permission dialogs and app switching can leave a pending start request queued.
-    // Clear it before cancelling so returning from background never starts the mic unexpectedly.
     pendingStart = false;
     if (speech != null) speech.cancel();
     super.onStop();
@@ -69,7 +67,7 @@ public class MainActivity extends Activity {
   // Android system back returns from settings to the performance screen; on the performance screen it exits.
   @Override public void onBackPressed() {
     if (webView == null) { finish(); return; }
-    webView.evaluateJavascript("(typeof handleAndroidBack === "function" && handleAndroidBack())", value -> {
+    webView.evaluateJavascript("(typeof handleAndroidBack === 'function' && handleAndroidBack())", value -> {
       if (!"true".equals(value)) finish();
     });
   }
