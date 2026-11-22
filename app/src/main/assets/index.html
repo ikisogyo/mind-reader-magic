@@ -35,5 +35,5 @@ function stopListen(){if(window.MindMagicSpeech)window.MindMagicSpeech.stop();li
 window.addEventListener('mindmagic-cue-text',e=>onCue(e.detail?.text));window.addEventListener('mindmagic-speech-status',e=>{let d=e.detail||{};if(d.type==='error'){stopListen();document.getElementById('hint').textContent='音声認識エラー：'+(d.text||'')+'。もう一度「聞き取り開始」を押してください。'}else if(d.type==='state'&&!d.listening&&!pending&&!revealed){listening=false;document.getElementById('listen').hidden=false;document.getElementById('stop').hidden=true;document.getElementById('hint').textContent='音声認識が終了しました。合図の言葉をもう一度どうぞ。'}});document.getElementById('heart').onclick=heartAction;
 // Optional device tilt: face-down gesture (screen orientation Z-axis near 180 degrees).
 window.addEventListener('deviceorientation',e=>{if(typeof e.beta!=='number')return;const faceDown=Math.abs(e.beta)>145,faceUp=Math.abs(e.beta)<35;if(pending&&!revealed&&faceDown){reveal();return;}if(revealed&&faceUp){nextRound();}});
-load();updateNetworkStatus();
+load();renderSettings();updateNetworkStatus();
 </script></body></html>
