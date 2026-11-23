@@ -5,7 +5,10 @@ assert(html.includes('function matchesSpecialCue(text){'), 'special cue matching
 assert(html.includes('(?:さいご|最後).{0,8}(?:おも|思).{0,10}(?:こと|事)'), 'special cue matcher accepts hiragana/kanji and longer spoken sentence');
 assert(html.includes('function specialCuePosition(text){')&&html.includes('specialPosition>=lastCuePosition'),'special and normal cue phrases compare transcript positions');
 assert(!html.includes("if(matchesSpecialCue(text)){"),'special cue is no longer unconditionally prioritized');
-assert(html.includes("Hello Kitty plush toy single isolated"), 'Hello Kitty search focuses on single plush');
-assert(html.includes("Doraemon plush toy single isolated"), 'Doraemon search focuses on single plush');
-assert(html.includes("group|groups|collection|lineup|set of|multiple|many|collage|montage|family|scene|background|crowd|store|museum|exhibit|壁紙|集合|複数|背景"), 'group and cluttered results are penalized');
-console.log('v210 voice registration and focused image retrieval: 6 checks passed');
+const start=html.indexOf('async function retrieveItemImage'),end=html.indexOf('function retrieveImagesForNewItems',start);
+assert(start>=0&&end>start,'image lookup function exists');
+const fn=html.slice(start,end);
+assert(fn.includes("encodeURIComponent(String(name||'').trim())"),'Google image search receives the Japanese item name unchanged');
+assert(!fn.includes('Hello Kitty plush toy single isolated')&&!fn.includes('Doraemon plush toy single isolated'),'no translated English query variants are used');
+assert(!fn.includes('commons.wikimedia.org'),'Wikimedia image search is not used');
+console.log('v210 voice registration and direct Japanese image search: 7 checks passed');
