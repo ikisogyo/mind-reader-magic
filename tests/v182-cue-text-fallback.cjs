@@ -8,7 +8,8 @@ function runReveal(item,cueIndex){
  const result={hidden:true,innerHTML:'',children:[],appendChild(x){this.children.push(x)}};
  const heart={classList:{removed:false,remove(){this.removed=true}}};
  const hint={textContent:''};
- const elements={result,heart,hint};
+ const magic={classList:{added:[],add(...names){this.added.push(...names)},remove(){}}};
+ const elements={result,heart,hint,magic};
  const context={pending:{kind:'item',index:0,cueIndex},revealed:false,data:{items:[item,item,item,item,item,item],cues:['いきますよ','みえるかな','すごいこと','しずかにして','こころをうつします','むずかしいかな']},playRevealSound(){},stopListen(){},nextRound(){},document:{getElementById(id){return elements[id]},createElement(tag){return {tag,className:'',src:'',alt:'',textContent:''}}}};
  vm.runInNewContext(revealFn+';reveal()',context);
  return {result,context};
