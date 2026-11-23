@@ -14,3 +14,6 @@ assert(html.includes('retry.onclick=()=>retrieveItemImage(item.name,i)'),'per-sl
 assert(html.includes('clear.onclick=()=>clearItemSlot(i)'),'per-slot clear button exists');
 assert(html.includes('function clearItemSlot(i){'),'clear action is defined');
 console.log('v209 extended: six-slot management UI checks passed');
+
+assert(html.includes("function renderSettings(){const cues=document.getElementById('cueFields');cues.innerHTML='';renderItemSlots();"),'renderSettings calls item-slot renderer');
+console.log('v209 settings-render check passed');
