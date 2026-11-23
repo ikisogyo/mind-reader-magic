@@ -10,8 +10,8 @@ const checks=[
  ['result tap returns',html.includes('result.onclick=nextRound')],
  ['face-down sensor reveal',html.includes('faceDown=Math.abs(e.beta)>145')],
  ['face-up returns/listens',html.includes('if(revealed&&faceUp){nextRound();}')&&html.includes('startListen();')],
- ['five randomized sounds',html.includes('function playRevealSound(){/* ハート画面では演出音を鳴らさず静かに動作 */')],
- ['audio graceful fallback',html.includes('ハート画面では演出音を鳴らさず静かに動作')],
+ ['five randomized reveal sound patterns',html.includes('function playRevealSound(){try{')&&html.includes('const patterns=[[880,1175,1568],[660,990,1320],[784,1047,1397],[523,784,1047,1568],[698,1047,1397]]')&&html.includes('patterns[Math.floor(Math.random()*patterns.length)]')],
+ ['audio graceful fallback',html.includes('音声再生が使えなくても判定表示は続行')],
  ['speech bridge cue event',html.includes('mindmagic-cue-text')],
  ['speech status event',fs.readFileSync(__dirname+'/../app/src/main/assets/bridge-events.js','utf8').includes('mindmagic-speech-status')],
 ];for(const [n,ok] of checks)console.log(`${ok?'PASS':'FAIL'} ${n}`);console.log(`${checks.filter(c=>c[1]).length}/${checks.length} passed`);if(checks.some(c=>!c[1]))process.exit(1);
