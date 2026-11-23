@@ -13,6 +13,6 @@ const checks=[
  ['five randomized sounds',html.includes('function playRevealSound(){/* ハート画面では演出音を鳴らさず静かに動作 */')],
  ['audio graceful fallback',html.includes('ハート画面では演出音を鳴らさず静かに動作')],
  ['speech bridge cue event',html.includes('mindmagic-cue-text')],
- ['speech status event',html.includes('mindmagic-speech-status')],
+ ['speech status event',fs.readFileSync(__dirname+'/../app/src/main/assets/bridge-events.js','utf8').includes('mindmagic-speech-status')],
 ];for(const [n,ok] of checks)console.log(`${ok?'PASS':'FAIL'} ${n}`);console.log(`${checks.filter(c=>c[1]).length}/${checks.length} passed`);if(checks.some(c=>!c[1]))process.exit(1);
 const inline=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].pop()?.[1];new vm.Script(inline);console.log('PASS inline script syntax');
