@@ -12,7 +12,7 @@ const cases=[
  ['mixed katakana and hiragana','イキますよ','いきますよ'],
  ['ascii punctuation','行きますよ!','いきますよ'],
  ['ascii comma and spaces','行きます, よ','いきますよ'],
- ['small katakana normalized','イキマスヨ','いきますよ'],
+ ['halfwidth katakana normalized','ｲｷﾏｽﾖ','いきますよ'],
 ];
 for(const [label,input,expected] of cases){const actual=context.normalize(input);assert.strictEqual(actual,expected,label);}
 console.log('v241 Japanese cue normalization regression: '+cases.length+' passed');
