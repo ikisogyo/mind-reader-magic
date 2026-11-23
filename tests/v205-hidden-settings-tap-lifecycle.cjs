@@ -1,8 +1,7 @@
 const fs=require('fs'),assert=require('assert');
 const html=fs.readFileSync('app/src/main/assets/index.html','utf8');
-const start=html.indexOf('function handleSecretTap(){');
-const end=html.indexOf('function updateNetworkStatus(){',start);
-const secret=start>=0&&end>start?html.slice(start,end):'';
+const match=html.match(/function handleSecretTap\\(\\)\\{[\\s\\S]*?\\nfunction /);
+const secret=match?match[0]:'';
 assert(secret.includes('secretTapCount++'),'tap count increments');
 assert(secret.includes('clearTimeout(secretTapTimer)'),'previous tap timer cleared');
 assert(secret.includes('secretTapTimer=null'),'timer reference cleared before settings activation');
