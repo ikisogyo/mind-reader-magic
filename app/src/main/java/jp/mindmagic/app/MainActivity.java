@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.content.pm.PackageManager;
 import android.webkit.WebView;
+import android.webkit.WebChromeClient;
 import android.webkit.WebViewClient;
 import android.webkit.JavascriptInterface;
 import androidx.core.app.ActivityCompat;
@@ -25,6 +26,7 @@ public class MainActivity extends Activity {
     webView.getSettings().setJavaScriptEnabled(true);
     webView.getSettings().setDomStorageEnabled(true);
     webView.setWebViewClient(new WebViewClient());
+    webView.setWebChromeClient(new WebChromeClient());
     setContentView(webView);
     speech = new SpeechRecognitionHelper(this, new SpeechRecognitionHelper.Callback() {
       @Override public void onPartial(String text) { emit("partial", text, 0, true); }
