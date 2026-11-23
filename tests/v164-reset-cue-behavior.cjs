@@ -8,6 +8,6 @@ const negative=['リセットしたい','リセット機能','リセットボタ
 let fails=0;
 for(const s of positive){const ok=isResetCue(s);console.log(`${ok?'PASS':'FAIL'} accepts ${s}`);if(!ok)fails++;}
 for(const s of negative){const ok=!isResetCue(s);console.log(`${ok?'PASS':'FAIL'} rejects ${s}`);if(!ok)fails++;}
-const gradle=fs.readFileSync(path.join(__dirname,'..','app/build.gradle'),'utf8');const versionMatch=gradle.match(/versionCode\\s+(\\d+).*?versionName\\s+'0\\.3\\.(\\d+)'/s);const versionOk=!!versionMatch&&versionMatch[1]===versionMatch[2];
+const gradle=fs.readFileSync(path.join(__dirname,'..','app/build.gradle'),'utf8');const versionMatch=gradle.match(/versionCode\s+(\d+).*?versionName\s+'0\.3\.(\d+)'/s);const versionOk=!!versionMatch&&versionMatch[1]===versionMatch[2];
 console.log(`${versionOk?'PASS':'FAIL'} app version metadata aligns dynamically`);if(!versionOk)fails++;
 console.log(`${positive.length+negative.length+1-fails}/${positive.length+negative.length+1} behavioral checks passed`);process.exit(fails?1:0);
