@@ -1,0 +1,14 @@
+const fs=require('fs'),assert=require('assert');
+const html=fs.readFileSync('app/src/main/assets/index.html','utf8');
+const secret=html.match(/function handleSecretTap\(\)\{[^}]+\}/)?.[0]||'';
+assert(secret.includes('secretTapCount++'),'tap count increments');
+assert(secret.includes('clearTimeout(secretTapTimer)'),'previous tap timer cleared');
+assert(secret.includes('secretTapTimer=null'),'timer reference cleared before settings activation');
+assert(secret.includes('secretTapCount>=5'),'settings require five taps');
+assert(secret.includes('showSettings()'),'settings opened only at threshold');
+assert(secret.includes('1800'),'tap window remains 1.8 seconds');
+assert(html.includes('id="secretTapZone"'),'dedicated hidden tap zone exists');
+assert(html.includes('document.getElementById(\'secretTapZone\').addEventListener(\'click\',handleSecretTap)'),'secret handler bound only to hidden tap zone');
+assert(html.includes('.secretTapZone{position:fixed;left:0;right:0;bottom:0;height:140px'),'secret zone confined to bottom 140px');
+assert(html.includes('.heart{')&&html.includes('z-index:4'),'heart remains visually above tap zone');
+console.log('v205 hidden-settings tap lifecycle: 10 checks passed');
