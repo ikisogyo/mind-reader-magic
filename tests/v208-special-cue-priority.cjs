@@ -1,0 +1,12 @@
+const fs=require('fs'),assert=require('assert');
+const html=fs.readFileSync('app/src/main/assets/index.html','utf8');
+const start=html.indexOf('function onCue(text){'),end=html.indexOf('function onPartialCue(text){',start);
+assert(start>=0&&end>start,'final cue handler exists');
+const final=html.slice(start,end);
+assert(final.indexOf("t.includes(normalize(data.specialCue))")<final.indexOf('let idx=-1,bestScore=0'),'special cue checked before item similarity matches');
+const ps=html.indexOf('function onPartialCue(text){'),pe=html.indexOf('function prepareReveal(){',ps);
+assert(ps>=0&&pe>ps,'partial handler exists');
+const partial=html.slice(ps,pe);
+assert(partial.indexOf('cueSimilarity(t,data.specialCue)>=0.92')>=0 || partial.indexOf('cueSimilarity(t,data.specialCue)>=0.92')>=0,'special cue partial threshold check');
+assert(partial.indexOf('pending={kind:\'special\'}')<partial.indexOf('let idx=-1,best=0'),'special cue partial match prioritized');
+console.log('v208 special-cue priority: 4 checks passed');
