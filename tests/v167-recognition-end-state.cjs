@@ -1,6 +1,6 @@
 const fs=require('fs'),assert=require('assert');
 const html=fs.readFileSync('app/src/main/assets/index.html','utf8');
-const retryErrors="(d.code===1||d.code===2||d.code===3||d.code===4||d.code===6||d.code===7||d.code===8)";
+assert(html.includes("if(d.type==='error'){listening=false;if(!pending&&!revealed&&"+retryErrors+")"), 'transient recognition errors restart only when no reveal is pending');
 assert(html.includes("if(d.type==='error'){listening=false;if(!pending&&!revealed&&"+retryErrors+"), 'transient recognition errors restart only when no reveal is pending');
 assert(html.includes('},900);'),'recognition retry is delayed');
 assert(html.includes('function stopListen(){if(speechRetryTimer){clearTimeout(speechRetryTimer);speechRetryTimer=null;}'), 'stop cancels pending retry');
