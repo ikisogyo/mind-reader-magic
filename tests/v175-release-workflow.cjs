@@ -4,9 +4,10 @@ const root = path.resolve(__dirname, '..');
 const build = fs.readFileSync(path.join(root, 'app/build.gradle'), 'utf8');
 const release = fs.readFileSync(path.join(root, '.github/workflows/android-release.yml'), 'utf8');
 const docs = fs.readFileSync(path.join(root, 'BUILD_APK_ON_GITHUB.md'), 'utf8');
+const version = build.match(/versionCode\\s+(\\d+);?\\s*versionName\\s+'([^']+)'/);
 const checks = [
-  ['versionCode 192', /versionCode 192/.test(build)],
-  ['versionName 0.3.192', /versionName '0\.3\.192'/.test(build)],
+  ['versionCode matches current release metadata', !!version && new RegExp('versionCode\\\\s+' + version[1]).test(build)],
+  ['versionName matches current release metadata', !!version && build.includes("versionName '" + version[2] + "'")],
   ['tag trigger v*', /tags:\s*- 'v\*'/.test(release)],
   ['tag verification is skipped for manual dispatch', /Verify release tag matches app version\s+if: startsWith\(github\.ref, 'refs\/tags\/'\)/.test(release)],
   ['manual workflow uploads APK artifact', release.includes('Upload APK artifact for manual workflow runs') && release.includes("if: always() && github.event_name == 'workflow_dispatch'") || release.includes("if: github.event_name == 'workflow_dispatch'")],
