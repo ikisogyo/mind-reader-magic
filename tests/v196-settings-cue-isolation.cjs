@@ -1,0 +1,13 @@
+const fs=require('fs');
+const html=fs.readFileSync('app/src/main/assets/index.html','utf8');
+const fn=html.match(/function onCue\(text\)\{[\s\S]*?\}\nfunction prepareReveal/);
+if(!fn)throw new Error('onCue function missing');
+const cue=fn[0];
+const itemCommand=cue.indexOf('if(handleItemCommand(text))return;');
+const settingsGuard=cue.indexOf("if(document.getElementById('settings').classList.contains('active'))return;");
+const normalCueMatch=cue.indexOf('let idx=data.cues.findIndex');
+if(itemCommand<0||settingsGuard<0||normalCueMatch<0)throw new Error('settings cue guard or item command missing');
+if(!(itemCommand<settingsGuard&&settingsGuard<normalCueMatch))throw new Error('settings guard must allow registration commands but block cue matching while settings is open');
+console.log('PASS settings mode accepts item commands before cue guard');
+console.log('PASS settings mode blocks normal/special cue triggers');
+console.log('2/2 passed');
