@@ -8,7 +8,7 @@ assert(fn.includes("document.getElementById('settings').classList.contains('acti
 assert(fn.includes("best>=0.92"),'partials require high confidence similarity before triggering reveal');
 assert(fn.includes('const t=normalize(text);if(t.length<4)return;'),'short partial transcripts are ignored before cue matching');
 assert(fn.includes("normalize(cue).length<3||t.length<Math.max(4,Math.ceil(normalize(cue).length*0.7))"),'long cues require at least 70 percent of cue length before partial triggering');
-assert(fn.includes("t.length>=Math.ceil(normalize(data.specialCue).length*0.7)"),'special cue requires at least 70 percent of its length');
+assert(fn.includes('matchesSpecialCue(text)'),'partial special cue uses flexible phrase matcher');
 assert(fn.includes("pending={kind:'item',index:idx,cueIndex:idx}")&&fn.includes("pending={kind:'special'}"),'partial recognition prepares both item and special photo reveal');
 assert(fn.includes("stopListen();pending=")&&fn.includes("prepareReveal();"),'partial cue stops recognition and enables heart reveal');
 console.log('v207 high-confidence partial cue recognition: 8 checks passed');
