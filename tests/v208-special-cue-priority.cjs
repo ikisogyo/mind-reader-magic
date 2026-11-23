@@ -7,6 +7,6 @@ assert(final.indexOf("t.includes(normalize(data.specialCue))")<final.indexOf('le
 const ps=html.indexOf('function onPartialCue(text){'),pe=html.indexOf('function prepareReveal(){',ps);
 assert(ps>=0&&pe>ps,'partial handler exists');
 const partial=html.slice(ps,pe);
-assert((partial.match(/cueSimilarity\(t,data\.specialCue\)>=0\.92/g)||[]).length===1,'special cue has one partial threshold check');
+assert(partial.includes('matchesSpecialCue(text)'),'partial special cue uses the shared flexible matcher');
 assert(partial.indexOf('pending={kind:\'special\'}')<partial.indexOf('let idx=-1,best=0'),'special cue partial match prioritized');
 console.log('v208 special-cue priority: 5 checks passed');
