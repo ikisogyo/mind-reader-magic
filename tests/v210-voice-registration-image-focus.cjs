@@ -5,10 +5,6 @@ assert(html.includes('function matchesSpecialCue(text){'), 'special cue matching
 assert(html.includes('(?:さいご|最後).{0,8}(?:おも|思).{0,10}(?:こと|事)'), 'special cue matcher accepts hiragana/kanji and longer spoken sentence');
 assert(html.includes('function specialCuePosition(text){')&&html.includes('specialPosition>=lastCuePosition'),'special and normal cue phrases compare transcript positions');
 assert(!html.includes("if(matchesSpecialCue(text)){"),'special cue is no longer unconditionally prioritized');
-const start=html.indexOf('async function retrieveItemImage'),end=html.indexOf('function retrieveImagesForNewItems',start);
-assert(start>=0&&end>start,'image lookup function exists');
-const fn=html.slice(start,end);
-assert(fn.includes("encodeURIComponent(String(name||'').trim())"),'Google image search receives the Japanese item name unchanged');
-assert(!fn.includes('Hello Kitty plush toy single isolated')&&!fn.includes('Doraemon plush toy single isolated'),'no translated English query variants are used');
-assert(!fn.includes('commons.wikimedia.org'),'Wikimedia image search is not used');
-console.log('v210 voice registration and direct Japanese image search: 7 checks passed');
+assert(!html.includes('Google画像検索')&&!html.includes('tbm=isch'),'voice registration does not add image search links');
+assert(html.includes("txt.textContent=item.name||cueLabel||'品物'"),'voice registered item without image reveals its name as text');
+console.log('v210 voice registration with image-free fallback: 7 checks passed');
