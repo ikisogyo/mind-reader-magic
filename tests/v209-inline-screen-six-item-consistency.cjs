@@ -8,12 +8,8 @@ assert(js.includes("pending={kind:'item',index:idx}"),'cue index is not wrapped 
 assert(!js.includes('%4'),'no legacy modulo-four slot mapping remains');
 console.log('v209 inline screen six-item consistency: 5 checks passed');
 
-assert(html.includes('id="itemFields"'),'six-item management list is rendered in settings');
-assert(html.includes('function renderItemSlots(){'),'item list renderer exists');
-assert(html.includes('retry.onclick=()=>retrieveItemImage(item.name,i)'),'per-slot image retry button exists');
-assert(html.includes('clear.onclick=()=>clearItemSlot(i)'),'per-slot clear button exists');
-assert(html.includes('function clearItemSlot(i){'),'clear action is defined');
-console.log('v209 extended: six-slot management UI checks passed');
-
-assert(html.includes("function renderSettings(){const cues=document.getElementById('cueFields');cues.innerHTML='';renderItemSlots();"),'renderSettings calls item-slot renderer');
+assert(!html.includes('id="itemFields"'),'no duplicated item-management panel in settings');
+assert(!html.includes('textContent=\'画像再検索\''),'no redundant per-item retry control in settings');
+assert(html.includes('function renderItemSlots(){/* 品物管理は重複表示せず'),'item management is not duplicated in settings');
+assert(html.includes('function renderSettings(){const cues=document.getElementById(\'cueFields\');cues.innerHTML=\'\';data.cues.forEach'),'settings only renders the six cue words and thumbnails');
 console.log('v209 settings-render check passed');
