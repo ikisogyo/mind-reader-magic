@@ -14,7 +14,7 @@ const checks=[
  ['ordinary and special photos share face-down then face-up reveal',html.includes('if(pending&&!revealed){if(faceDown&&!specialFaceDownSeen){specialFaceDownSeen=true;')&&html.includes('if(specialFaceDownSeen&&faceUp){reveal();return;}')],
  ['five randomized reveal sound patterns',html.includes('function playRevealSound(){try{')&&html.includes('const patterns=[[880,1175,1568],[660,990,1320],[784,1047,1397],[523,784,1047,1568],[698,1047,1397]]')&&html.includes('patterns[Math.floor(Math.random()*patterns.length)]')],
  ['audio graceful fallback',html.includes('音声再生が使えなくても判定表示は続行')],
- ['speech bridge cue event',html.includes('mindmagic-cue-text')],
+ ['native speech result event feeds cue handler',html.includes("window.addEventListener('mindmagic-speech'")&&html.includes("onCue(d.text);if(!pending&&!revealed)startListen();")],
  ['speech status event',fs.readFileSync(__dirname+'/../app/src/main/assets/bridge-events.js','utf8').includes('mindmagic-speech-status')],
 ];for(const [n,ok] of checks)console.log(`${ok?'PASS':'FAIL'} ${n}`);console.log(`${checks.filter(c=>c[1]).length}/${checks.length} passed`);if(checks.some(c=>!c[1]))process.exit(1);
 const inline=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].pop()?.[1];new vm.Script(inline);console.log('PASS inline script syntax');
