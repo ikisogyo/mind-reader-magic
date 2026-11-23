@@ -3,6 +3,7 @@ const checks=[
  ['6 object slots',html.includes('length:6')],
  ['6 cue slots',html.includes("cues:['いきますよ','みえるかな','すごいこと','しずかにして','こころをうつします','むずかしいかな']")&&html.includes('data.cues.forEach')],
  ['multi-item voice add accepts 「追加します」',html.includes('追加(?:してください|して下さい|しました|します|してね|お願いします|しておいてください|しておいて|しておく|して)?')],
+ ['multi-item parser cleanup and conjunction split',html.includes("s=s.replace(/^(?:ここに|これらは|品物は|品物が|それは|あと|あとは)/")&&html.includes("(?:と|および|及び)")],
  ['cue thumbnails',html.includes('cueThumb')&&html.includes('data.items[i]?.image')],
  ['special photo cue/message',html.includes('specialCue')&&html.includes('specialMessage')],
  ['reset retains cues',html.includes('data.cues')&&html.includes('判定用の言葉・特別写真の設定は保持')],
