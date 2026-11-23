@@ -12,5 +12,5 @@ assert(html.includes("saved?'保存しました':'保存容量不足で保存で
 assert(html.includes("保存容量不足のため変更を取り消しました。画像を小さくするか、登録済み画像を減らしてください。"),'special photo import reports quota failure');
 assert(html.includes("saved?'特別写真を保存しました':'保存容量不足のため変更を取り消しました。画像を小さくするか、登録済み画像を減らしてください。'"),'special image import reports quota failure and rollback');
 assert(html.includes("saved?'品物と画像を消去しました。判定用の言葉・特別写真の設定は保持しています。':'保存失敗のため、品物と画像の消去を取り消しました。端末の保存容量を空けて再度リセットしてください。'"),'reset reports save failure');
-const version=fs.readFileSync('app/build.gradle','utf8').match(/versionCode\\s+(\\d+);\\s*versionName\\s+'0\\.3\\.(\\d+)'/);assert(version&&version[1]===version[2],'app version metadata aligns');
+const version=fs.readFileSync('app/build.gradle','utf8').match(/versionCode\\s+(\\d+)[\\s\\S]*?versionName\\s+'0\\.3\\.(\\d+)'/);assert(version&&version[1]===version[2],'app version metadata aligns');
 console.log('v173 storage quota handling: 8 checks passed');
