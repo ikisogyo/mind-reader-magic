@@ -1,0 +1,17 @@
+const fs=require('fs'),assert=require('assert');
+const html=fs.readFileSync('app/src/main/assets/index.html','utf8');
+const s=html.indexOf('function onCue(text){'),e=html.indexOf('function onPartialCue(text){',s);
+assert(s>=0&&e>s,'final cue resolver exists');
+const fn=html.slice(s,e);
+assert(fn.includes('lastCuePosition'),'normal cues track phrase position');
+assert(fn.includes('specialCuePosition(text)'),'special cue has positional matching');
+assert(fn.includes('specialPosition>=lastCuePosition'),'later special cue wins over earlier normal cue');
+assert(fn.includes('specialPosition<0&&idx<0&&matchesSpecialCue(text)'),'fuzzy special matching is only fallback without positional cue');
+const hp=html.indexOf('function specialCuePosition(text){'),he=html.indexOf('function onCue(text){',hp);
+assert(hp>=0&&he>hp,'special cue position helper exists');
+const helper=html.slice(hp,he);
+assert(helper.includes('lastIndexOf(cue)'),'exact special cue position retained');
+assert(helper.includes('lastIndexOf(phrase)'),'variation match position retained');
+assert(html.includes("Array.from({length:6},()=>({name:'',image:''}))"),'stored items normalize to six slots');
+assert(html.includes('data.items.forEach((item,i)=>{const registered=!!(item&&(item.name||item.image))'),'all six item slots are represented in count indicators');
+console.log('v213 cue order and six-slot safeguards: 8 checks passed');
