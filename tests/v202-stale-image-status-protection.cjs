@@ -7,3 +7,7 @@ assert((fn.split('requestToken===imageRequestTokens[slot]&&status').length-1)>=2
 assert(fn.includes('if(requestToken===imageRequestTokens[slot])updateCountDots();'),'stale requests do not overwrite slot status dots');
 assert(fn.includes('requestToken!==imageRequestTokens[slot]'),'stale success is rejected');
 console.log('v202 stale image status protection: 3 checks passed');
+
+assert(html.includes('imageLoadingSlots[i]?\'\':\' failed\''),'loading slots must not show failed red dot');
+assert(html.includes('画像取得中'),'loading slots expose loading state');
+console.log('v202 image loading indicator: 2 additional checks passed');
