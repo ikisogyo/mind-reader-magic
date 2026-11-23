@@ -12,7 +12,7 @@ const tests=[
  ['spoken reset implemented',html.includes('function isResetCue(text)')&&html.includes('if(isResetCue(text)){resetItems();return;}')&&html.includes('items:Array.from')&&html.includes('if(!saved)data=previous')],
  ['special photo separate upload',html.includes('specialFile')&&html.includes('specialImage')],
  ['special cue and message fields',html.includes('specialCue')&&html.includes('specialMessage')],
- ['bridge events wired',html.includes('mindmagic-cue-text')&&html.includes('mindmagic-speech-status')],
+ ['bridge events wired',html.includes('mindmagic-cue-text')&&fs.readFileSync(__dirname+'/../app/src/main/assets/bridge-events.js','utf8').includes('mindmagic-speech-status')],
  ['cue thumbnails',html.includes('cueThumb')&&html.includes('item.image')]
 ];
 for(const [name,ok] of tests)console.log(`${ok?'PASS':'FAIL'} ${name}`);
