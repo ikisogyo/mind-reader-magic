@@ -5,7 +5,7 @@ assert(start>=0&&end>start,'item command handler exists');
 const handler=html.slice(start,end);
 assert(handler.includes('findIndex(it=>!it.name&&!it.image)'),'registration only uses first empty slot');
 assert(handler.includes('data.items.some(it=>normalize(it.name)===normalize(name))'),'duplicate item names are rejected');
-assert(!handler.includes('変更機能'),'item-change feature is removed');
+assert(!handler.includes('changeMatch')&&!handler.includes('changeItem'),'item-change feature is removed');
 const resetStart=html.indexOf('function resetItems()'),resetEnd=html.indexOf('function normalize(',resetStart);
 assert(resetStart>=0&&resetEnd>resetStart,'reset function exists');
 const reset=html.slice(resetStart,resetEnd);
