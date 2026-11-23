@@ -4,9 +4,9 @@ const root = path.resolve(__dirname, '..');
 const build = fs.readFileSync(path.join(root, 'app/build.gradle'), 'utf8');
 const release = fs.readFileSync(path.join(root, '.github/workflows/android-release.yml'), 'utf8');
 const docs = fs.readFileSync(path.join(root, 'BUILD_APK_ON_GITHUB.md'), 'utf8');
-const version = build.match(/versionCode\\s+(\\d+);?\\s*versionName\\s+'([^']+)'/);
+const version = build.match(/versionCode\s+(\d+);?\s*versionName\s+'([^']+)'/);
 const checks = [
-  ['versionCode matches current release metadata', !!version && new RegExp('versionCode\\\\s+' + version[1]).test(build)],
+  ['versionCode matches current release metadata', !!version && new RegExp('versionCode\\s+' + version[1]).test(build)],
   ['versionName matches current release metadata', !!version && build.includes("versionName '" + version[2] + "'")],
   ['tag trigger v*', /tags:\s*- 'v\*'/.test(release)],
   ['tag verification is skipped for manual dispatch', /Verify release tag matches app version\s+if: startsWith\(github\.ref, 'refs\/tags\/'\)/.test(release)],
