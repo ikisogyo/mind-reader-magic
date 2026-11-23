@@ -1,7 +1,9 @@
 const fs=require('fs'),assert=require('assert');
 const html=fs.readFileSync('app/src/main/assets/index.html','utf8');
-assert(html.includes('let imageRequestTokens=Array.from({length:6},()=>0);'),'per-slot request tokens initialized');
-assert(html.includes('const requestToken=++imageRequestTokens[slot];'),'each image retrieval gets fresh token');
-assert(html.includes('requestToken!==imageRequestTokens[slot]'),'stale retrievals rejected before saving');
-assert(html.includes('imageRequestTokens.forEach((token,i)=>{imageRequestTokens[i]++;imageLoadingSlots[i]=false;});'),'reset invalidates pending retrievals');
-console.log('v201 stale image retrieval protection checks: 4 passed');
+const start=html.indexOf('async function retrieveItemImage'),end=html.indexOf('function retrieveImagesForNewItems',start);
+assert(start>=0&&end>start,'image retrieval function exists');
+const fn=html.slice(start,end);
+assert(fn.includes("https://www.google.com/search?tbm=isch&q="),'image lookup opens Google Images');
+assert(fn.includes("encodeURIComponent(String(name||'').trim())"),'Japanese item name is passed directly without translation');
+assert(!fn.includes('translate')&&!fn.includes('英訳')&&!fn.includes('Wikimedia')&&!fn.includes('commons.wikimedia.org'),'no translation or Wikimedia dependency in lookup');
+console.log('v201 direct Japanese Google image lookup: 4 checks passed');
