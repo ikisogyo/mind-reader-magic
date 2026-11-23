@@ -6,7 +6,7 @@ const context={};vm.runInNewContext(html.slice(start,end)+';this.normalize=norma
 const cases=[
  ['spoken kanji cue','行きますよ','いきますよ'],
  ['punctuation and whitespace','行きます よ！','いきますよ'],
- ['NFKC normalization','いきますよ','いきますよ'],
+ ['katakana cue','イキマスヨ','いきますよ'],
  ['spoken short form','行きます','いきます'],
 ];
 for(const [label,input,expected] of cases){const actual=context.normalize(input);assert.strictEqual(actual,expected,label);}
