@@ -2,14 +2,14 @@ const fs=require('fs'),assert=require('assert'),vm=require('vm');
 const html=fs.readFileSync('app/src/main/assets/index.html','utf8');
 const revealSource=html.match(/function reveal\(\)\{[\s\S]*?\nfunction nextRound\(/);
 assert(revealSource,'reveal function is present');
-assert(html.includes("pending={kind:'item',index:idx%4,cueIndex:idx}"),'recognized cue index is preserved for reveal text');
+assert(html.includes("pending={kind:'item',index:idx,cueIndex:idx}"),'recognized cue index is preserved for reveal text');
 const revealFn=revealSource[0].replace(/\nfunction nextRound\($/,'');
 function runReveal(item,cueIndex){
  const result={hidden:true,innerHTML:'',children:[],appendChild(x){this.children.push(x)}};
  const heart={classList:{removed:false,remove(){this.removed=true}}};
  const hint={textContent:''};
  const elements={result,heart,hint};
- const context={pending:{kind:'item',index:0,cueIndex},revealed:false,data:{items:[item],cues:['りんご','バナナ','時計','鍵','','']},playRevealSound(){},stopListen(){},nextRound(){},document:{getElementById(id){return elements[id]},createElement(tag){return {tag,className:'',src:'',alt:'',textContent:''}}}};
+ const context={pending:{kind:'item',index:0,cueIndex},revealed:false,data:{items:[item,item,item,item,item,item],cues:['いきますよ','みえるかな','すごいこと','しずかにして','こころをうつします','むずかしいかな']},playRevealSound(){},stopListen(){},nextRound(){},document:{getElementById(id){return elements[id]},createElement(tag){return {tag,className:'',src:'',alt:'',textContent:''}}}};
  vm.runInNewContext(revealFn+';reveal()',context);
  return {result,context};
 }
