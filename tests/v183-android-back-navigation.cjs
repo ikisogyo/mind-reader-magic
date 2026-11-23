@@ -3,7 +3,7 @@ const root=path.join(__dirname,'..');
 const html=fs.readFileSync(path.join(root,'app/src/main/assets/index.html'),'utf8');
 const java=fs.readFileSync(path.join(root,'app/src/main/java/jp/mindmagic/app/MainActivity.java'),'utf8');
 const gradle=fs.readFileSync(path.join(root,'app/build.gradle'),'utf8');
-const version=gradle.match(/versionCode\\s+(\\d+);?\\s*versionName\\s+'([^']+)'/);
+const version=gradle.match(/versionCode\s+(\d+);?\s*versionName\s+'([^']+)'/);
 const checks=[
  ['JS back handler returns to performance screen from settings',/function handleAndroidBack\(\)\{if\(document\.getElementById\('settings'\)\.classList\.contains\('active'\)\)\{stopListen\(\);showMagic\(\);/.test(html)],
  ['JS back handler exits when already on performance screen',/function handleAndroidBack\(\).*return false;\}/.test(html)],
