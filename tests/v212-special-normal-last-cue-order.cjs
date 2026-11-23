@@ -1,0 +1,13 @@
+const fs=require('fs'),assert=require('assert');
+const html=fs.readFileSync('app/src/main/assets/index.html','utf8');
+const helperStart=html.indexOf('function specialCuePosition(text){'),helperEnd=html.indexOf('function onCue(text){',helperStart);
+assert(helperStart>=0&&helperEnd>helperStart,'special cue position helper exists');
+const helper=html.slice(helperStart,helperEnd);
+assert(helper.includes('t.lastIndexOf(cue)'),'special cue exact phrase position is detected');
+assert(helper.includes('t.lastIndexOf(phrase)'),'spoken variation position is detected');
+const start=html.indexOf('function onCue(text){'),end=html.indexOf('function onPartialCue(text){',start);
+assert(start>=0&&end>start,'final cue handler exists');
+const fn=html.slice(start,end);
+assert(fn.includes('specialPosition>=lastCuePosition'),'later special cue overrides earlier normal cue');
+assert(fn.includes('specialPosition<0&&idx<0&&matchesSpecialCue(text)'),'fuzzy fallback only when no positioned cue found');
+console.log('v212 latest cue across special/normal phrases: 5 checks passed');
