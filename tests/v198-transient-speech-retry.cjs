@@ -1,8 +1,8 @@
 const fs = require('fs');
 const assert = require('assert');
 const html = fs.readFileSync('app/src/main/assets/index.html', 'utf8');
-const transientRetry = "(d.code===1||d.code===2||d.code===3||d.code===4||d.code===6||d.code===7||d.code===8)";
-assert(html.includes(transientRetry), 'network/audio/server/timeout/no-match/busy transient errors retry');
+const transientRetry = "(d.code===-1003||d.code===1||d.code===2||d.code===3||d.code===4||d.code===6||d.code===7||d.code===8)";
+assert(html.includes(transientRetry), 'Android start exception and network/audio/server/timeout/no-match/busy transient errors retry');
 assert(!html.includes(transientRetry + "||d.code===9"), 'permission errors must not retry endlessly');
 assert(html.includes("if(!pending&&!revealed)startListen();"), 'retry only when not pending and not revealed');
 assert(html.includes("},900);"), 'retry delay is 900ms');
