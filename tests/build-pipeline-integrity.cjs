@@ -6,7 +6,9 @@ const release = fs.readFileSync(path.join(root, '.github/workflows/android-relea
 const gradle = fs.readFileSync(path.join(root, 'app/build.gradle'), 'utf8');
 const upload = fs.readFileSync(path.join(root, 'upload-source-to-github.ps1'), 'utf8');
 function assert(condition, message) { if (!condition) throw new Error(message); }
-assert(build.includes("branches: [ main, master ]"), 'Build workflow must trigger for main/master pushes');
+assert(build.includes('workflow_dispatch:'), 'Build workflow must allow manual runs');
+assert(build.includes('pull_request:'), 'Build workflow must run for pull requests');
+assert(!build.includes('\n  push:'), 'Push-triggered builds must stay disabled during batched development');
 assert(build.includes('workflow_dispatch:'), 'Build workflow must allow manual runs');
 assert(build.includes("gradle-version: '8.7'"), 'Build workflow Gradle version missing');
 assert(build.includes("'platforms;android-35'"), 'Android platform 35 must be installed in CI');
@@ -19,5 +21,5 @@ assert(release.includes('mindmagic-debug.apk.sha256'), 'Release checksum asset m
 const match = gradle.match(/versionName\s+'([^']+)'/);
 assert(match, 'App versionName missing');
 assert(release.includes('verify_release_version.py'), 'Tag/version guard must remain in release pipeline');
-assert(upload.includes('git push -u origin main'), 'Source upload helper must push main to trigger CI');
+assert(upload.includes('git push -u origin main'), 'Source upload helper must still upload main branch');
 console.log('PASS build pipeline integrity: workflows, SDK/Gradle config, artifact/checksum, release guard, upload helper');
