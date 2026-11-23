@@ -3,7 +3,7 @@ const html=fs.readFileSync('app/src/main/assets/index.html','utf8');
 const start=html.indexOf('// Optional device tilt:');
 const listLike=html.indexOf('const listLike=settingsVisible&&/(?:と|、|,|，|・)/.test(s)');
 assert(listLike>=0,'voice list parsing is scoped to settings screen');
-const block=html.slice(listLike,html.indexOf('return false;}',listLike));
+const block=html.slice(listLike,html.indexOf('\nreturn false;}',listLike));
 assert(block.includes('data.items.some(it=>normalize(it.name)===normalize(name))'),'settings voice list rejects existing duplicate item names');
 assert(block.includes('findIndex(it=>!it.name&&!it.image)'),'settings voice list fills empty slots in left-to-right order');
 assert(block.includes('skipped++'),'duplicates and overflow are reported as skipped');
