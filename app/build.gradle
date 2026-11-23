@@ -2,6 +2,6 @@ plugins { id 'com.android.application' }
 android {
  namespace 'jp.mindmagic.app'
  compileSdk 35
- defaultConfig { applicationId 'jp.mindmagic.app'; minSdk 23; targetSdk 35; versionCode 194; versionName '0.3.194' }
+ defaultConfig { applicationId 'jp.mindmagic.app'; minSdk 23; targetSdk 35; versionCode 195; versionName '0.3.195' }
 }
 dependencies { implementation 'androidx.core:core:1.15.0' }
