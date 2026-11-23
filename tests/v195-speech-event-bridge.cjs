@@ -4,7 +4,7 @@ const java=fs.readFileSync('app/src/main/java/jp/mindmagic/speech/WebViewSpeechB
 const checks=[
  ['JS listens to Android bridge event name',html.includes("addEventListener('mindmagic-speech'" )],
  ['bridge dispatches same event name',java.includes("new CustomEvent('mindmagic-speech'" )],
- ['recognized result text is forwarded to cue matching',html.includes("if(d.type==='result'){onCue(d.text);" )],
+ ['recognized result text is forwarded to cue matching',html.includes("if(d.type==='result'){listening=false;if(!pending&&!revealed){onCue(d.text);" )],
  ['result restarts listening only when no reveal is pending',html.includes("if(!pending&&!revealed)startListen();" )]
 ];
 let failures=0;for(const [name,ok] of checks){console.log((ok?'PASS':'FAIL')+': '+name);if(!ok)failures++;}
