@@ -4,6 +4,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.os.Bundle;
 import android.content.pm.PackageManager;
+import android.content.Intent;
+import android.net.Uri;
+import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.webkit.WebChromeClient;
 import android.webkit.WebViewClient;
@@ -19,6 +22,8 @@ public class MainActivity extends Activity {
   private SpeechRecognitionHelper speech;
   private WebViewSpeechBridge bridge;
   private boolean pendingStart = false;
+  private ValueCallback<Uri[]> fileChooserCallback;
+  private static final int FILE_CHOOSER_REQUEST = 1481;
 
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -26,7 +31,21 @@ public class MainActivity extends Activity {
     webView.getSettings().setJavaScriptEnabled(true);
     webView.getSettings().setDomStorageEnabled(true);
     webView.setWebViewClient(new WebViewClient());
-    webView.setWebChromeClient(new WebChromeClient());
+    webView.setWebChromeClient(new WebChromeClient() {
+      @Override public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
+        if (fileChooserCallback != null) fileChooserCallback.onReceiveValue(null);
+        fileChooserCallback = callback;
+        try {
+          Intent intent = params.createIntent();
+          startActivityForResult(intent, FILE_CHOOSER_REQUEST);
+          return true;
+        } catch (Exception e) {
+          fileChooserCallback = null;
+          callback.onReceiveValue(null);
+          return false;
+        }
+      }
+    });
     setContentView(webView);
     speech = new SpeechRecognitionHelper(this, new SpeechRecognitionHelper.Callback() {
       @Override public void onPartial(String text) { emit("partial", text, 0, true); }
@@ -48,6 +67,16 @@ public class MainActivity extends Activity {
     if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) { speech.start(); return; }
     pendingStart = true;
     ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, MIC_REQUEST);
+  }
+  @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == FILE_CHOOSER_REQUEST) {
+      if (fileChooserCallback != null) {
+        Uri[] result = WebChromeClient.FileChooserParams.parseResult(resultCode, data);
+        fileChooserCallback.onReceiveValue(result);
+        fileChooserCallback = null;
+      }
+    }
   }
   @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
     super.onRequestPermissionsResult(requestCode, permissions, results);
