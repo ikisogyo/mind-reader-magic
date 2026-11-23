@@ -7,7 +7,7 @@ if(!match[2].includes('Math.abs(e.beta)<35')) throw new Error('face-up detection
 console.log('PASS face-down sensor threshold handles both beta signs');
 console.log('PASS face-up threshold symmetric');
 
-const specialOnly=html.includes("pending.kind==='special'&&faceDown");
+const specialOnly=html.includes("if(pending&&!revealed&&pending.kind==='special')")&&html.includes('if(faceDown&&!specialFaceDownSeen){specialFaceDownSeen=true;');
 if(!specialOnly) throw new Error('face-down detection must be gated to special photo and track prior face-down state');
 const resetOnly=html.includes('if(specialFaceDownSeen&&faceUp){reveal();return;}');
 if(!resetOnly) throw new Error('face-up must reveal special photo only after face-down was detected');
