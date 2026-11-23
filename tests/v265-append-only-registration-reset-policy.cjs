@@ -1,0 +1,16 @@
+const fs=require('fs'),assert=require('assert');
+const html=fs.readFileSync('app/src/main/assets/index.html','utf8');
+const start=html.indexOf('function handleItemCommand(text)'),end=html.indexOf('function cueSimilarity',start);
+assert(start>=0&&end>start,'item command handler exists');
+const handler=html.slice(start,end);
+assert(handler.includes('findIndex(it=>!it.name&&!it.image)'),'registration only uses first empty slot');
+assert(handler.includes('data.items.some(it=>normalize(it.name)===normalize(name))'),'duplicate item names are rejected');
+assert(!handler.includes('変更機能'),'item-change feature is removed');
+const resetStart=html.indexOf('function resetItems()'),resetEnd=html.indexOf('function normalize(',resetStart);
+assert(resetStart>=0&&resetEnd>resetStart,'reset function exists');
+const reset=html.slice(resetStart,resetEnd);
+assert(reset.includes('data={...data,items:Array.from({length:6},()=>({name:\'\',image:\'\'}))}'),'reset clears item names and images only by preserving the other settings');
+assert(reset.includes('判定用の言葉・特別写真の設定は保持'),'reset feedback states cue and special photo settings are retained');
+assert(html.includes('itemNameLabel'),'settings render per-slot item labels');
+assert(html.includes("item.name?'登録品：'+item.name:'品物未登録'"),'slot label reflects registration status');
+console.log('Append-only six-slot registration and item-only reset policy verified.');
