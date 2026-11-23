@@ -4,5 +4,5 @@ const stop=activity.slice(activity.indexOf('public void onStop()'),activity.inde
 assert(stop.includes('pendingStart = false'),'pending microphone start is cleared on background');
 assert(stop.indexOf('pendingStart = false') < stop.indexOf('speech.cancel()'),'pending start is cleared before speech cancellation');
 assert(activity.includes('if (pendingStart && granted) speech.start()'),'permission callback still requires pending request');
-const version=fs.readFileSync('app/build.gradle','utf8').match(/versionCode\\s+(\\d+);\\s*versionName\\s+'0\\.3\\.(\\d+)'/);assert(version&&version[1]===version[2],'app version metadata aligns');
+const version=fs.readFileSync('app/build.gradle','utf8').match(/versionCode\\s+(\\d+)[\\s\\S]*?versionName\\s+'0\\.3\\.(\\d+)'/);assert(version&&version[1]===version[2],'app version metadata aligns');
 console.log('v172 background permission cancellation checks: 4 passed');
