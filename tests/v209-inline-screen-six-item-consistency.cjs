@@ -1,5 +1,6 @@
 const fs=require('fs'),assert=require('assert');
 const js=fs.readFileSync('tests/inline-screen.js','utf8');
+const html=fs.readFileSync('app/src/main/assets/index.html','utf8');
 assert(js.includes("items:Array.from({length:6},()=>({name:'',image:''}))"),'harness initializes six item slots');
 assert(js.includes('thumb.src=data.items[i]?.image||'),'cue thumbnail maps directly to corresponding item slot');
 assert(js.includes("data.items=Array.from({length:6},()=>({name:'',image:''}))"),'reset keeps six item slots');
