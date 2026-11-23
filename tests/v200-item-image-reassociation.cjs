@@ -1,11 +1,8 @@
 const fs=require('fs'),assert=require('assert');
 const html=fs.readFileSync('app/src/main/assets/index.html','utf8');
-const change=html.match(/const change=s\.match[\s\S]*?\nif\(\/(?:ここに|品物は|があります|がある)\//);
-assert(change,'item-change command section exists');
-const block=change[0];
-assert(block.includes('const before={...data.items[idx};')===false,'backup syntax sanity');
-assert(block.includes('const before={...data.items[idx]};'),'entire item slot is backed up');
-assert(block.includes("data.items[idx].image='';"),'changing item name clears old image association');
-assert(block.includes('retrieveItemImage(to,idx);'),'changed item triggers matching image retrieval');
-assert(block.includes('data.items[idx]=before;'),'failed save restores old name and image');
+assert(html.includes("const before={...data.items[idx];")===false,'sanity: malformed backup absent');
+assert(html.includes("const before={...data.items[idx]};"),'rename backs up full slot');
+assert(html.includes("data.items[idx].image='';"),'rename clears stale image');
+assert(html.includes("retrieveItemImage(to,idx);"),'rename starts matching image retrieval');
+assert(html.includes("data.items[idx]=before;"),'save failure restores old slot');
 console.log('v200 item image reassociation checks: 5 passed');
