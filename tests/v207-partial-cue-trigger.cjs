@@ -1,0 +1,12 @@
+const fs=require('fs'),assert=require('assert');
+const html=fs.readFileSync('app/src/main/assets/index.html','utf8');
+assert(html.includes("if(d.type==='partial'){if(!pending&&!revealed)onPartialCue(d.text);return;}"),'partial speech event handled by performance screen');
+const start=html.indexOf('function onPartialCue(text){'),end=html.indexOf('function prepareReveal(){',start);
+assert(start>=0&&end>start,'partial cue matcher exists');
+const fn=html.slice(start,end);
+assert(fn.includes("document.getElementById('settings').classList.contains('active')"),'partial cues ignored while settings open');
+assert(fn.includes("best>=0.92"),'partials require high confidence similarity before triggering reveal');
+assert(fn.includes("normalize(cue).length<3"),'very short cues are excluded from partial triggering');
+assert(fn.includes("pending={kind:'item',index:idx,cueIndex:idx}")&&fn.includes("pending={kind:'special'}"),'partial recognition prepares both item and special photo reveal');
+assert(fn.includes("stopListen();pending=")&&fn.includes("prepareReveal();"),'partial cue stops recognition and enables heart reveal');
+console.log('v207 high-confidence partial cue recognition: 7 checks passed');
