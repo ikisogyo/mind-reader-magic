@@ -19,7 +19,7 @@ const checks=[
 ];for(const [n,ok] of checks)console.log(`${ok?'PASS':'FAIL'} ${n}`);console.log(`${checks.filter(c=>c[1]).length}/${checks.length} passed`);if(checks.some(c=>!c[1]))process.exit(1);
 const inline=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].pop()?.[1];new vm.Script(inline);console.log('PASS inline script syntax');
 // Run parser behavior tests against the actual helper code from the app source.
-const start=html.indexOf('function cleanItemName'),end=html.indexOf('function retrieveItemImage',start);
+const start=html.indexOf('function cleanItemName'),end=html.indexOf('async function retrieveItemImage',start);
 if(start<0||end<0)throw new Error('Parser helper extraction failed');
 const parserContext={};vm.runInNewContext(html.slice(start,end)+';this.parseItemNames=parseItemNames;',parserContext);
 const parserCases=[
