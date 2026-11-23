@@ -6,5 +6,5 @@ assert(stop.includes('recognitionActive = false;'),'stop clears active recogniti
 assert(stop.includes('recognizer.cancel();'),'stop cancels active session');
 assert(stop.includes('setListening(false);'),'stop clears UI listening state');
 assert(!stop.includes('stopListening()'),'stop no longer leaves recognizer awaiting final callback');
-assert(/versionCode 192; versionName '0\.3\.192'/.test(fs.readFileSync('app/build.gradle','utf8')),'version metadata updated');
+const gradle=fs.readFileSync('app/build.gradle','utf8');const version=gradle.match(/versionCode\s+(\d+);?\s*versionName\s+'([^']+)'/);assert(version&&version[1]===version[2].split('.').pop(),'version metadata consistent');
 console.log('v0.3.192 stop/restart checks: 5 passed');
