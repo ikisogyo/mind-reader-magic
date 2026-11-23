@@ -94,7 +94,7 @@ public final class SpeechRecognitionHelper {
   }
 
   public void stop() {
-    // Release the recognition guard immediately; stopListening waits for a final callback.
+    // Release the recognition guard immediately; cancel may throw on some OEM services.
     recognitionActive = false;
     if (recognizer != null) {
       try { recognizer.cancel(); }
@@ -108,7 +108,13 @@ public final class SpeechRecognitionHelper {
 
   public void cancel() {
     recognitionActive = false;
-    if (recognizer != null) recognizer.cancel();
+    if (recognizer != null) {
+      try { recognizer.cancel(); }
+      catch (RuntimeException ex) {
+        try { recognizer.destroy(); } catch (RuntimeException ignored) { }
+        recognizer = null;
+      }
+    }
     setListening(false);
   }
 
@@ -116,13 +122,12 @@ public final class SpeechRecognitionHelper {
     destroyed = true;
     recognitionActive = false;
     if (recognizer != null) {
-      recognizer.cancel();
-      recognizer.destroy();
+      try { recognizer.cancel(); } catch (RuntimeException ignored) { }
+      try { recognizer.destroy(); } catch (RuntimeException ignored) { }
       recognizer = null;
     }
     setListening(false);
   }
-
   private void setListening(boolean value) {
     if (listening != value) {
       listening = value;
