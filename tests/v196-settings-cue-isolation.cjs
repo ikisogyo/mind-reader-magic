@@ -4,8 +4,8 @@ const start=html.indexOf('function onCue(text){'),end=html.indexOf('function pre
 assert(start>=0&&end>start,'onCue function exists');const cue=html.slice(start,end);
 const itemCommand=cue.indexOf('if(handleItemCommand(text))return;');
 const settingsBranch=cue.indexOf('if(settingsVisible){');
-const normalCueMatch=cue.indexOf('let idx=data.cues.findIndex');
-assert(itemCommand>=0&&settingsBranch>=0&&normalCueMatch>=0,'item registration, settings branch and normal cue matching exist');
+const normalCueMatch=cue.indexOf('data.cues.forEach((cue,i)=>{');
+assert(itemCommand>=0&&settingsBranch>=0&&normalCueMatch>=0,'item registration, settings branch and scored normal cue matching exist');
 assert(itemCommand<settingsBranch&&settingsBranch<normalCueMatch,'settings mode handles spoken registration before performance cue matching');
-assert(cue.includes('if(settingsVisible){')&&cue.includes('return;}let idx=data.cues.findIndex'),'settings mode exits before normal cue matching');
+assert(cue.includes('if(settingsVisible){')&&cue.includes('return;}if(isResetCue(text))'),'settings mode exits before normal cue matching');
 console.log('v196 settings cue isolation: 3 checks passed');
