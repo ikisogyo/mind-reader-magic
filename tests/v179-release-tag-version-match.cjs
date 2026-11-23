@@ -5,7 +5,10 @@ const root = path.resolve(__dirname, '..');
 const workflow = fs.readFileSync(path.join(root, '.github/workflows/android-release.yml'), 'utf8');
 const script = path.join(root, 'verify_release_version.py');
 const setup = fs.readFileSync(path.join(root, 'upload-source-to-github.ps1'), 'utf8');
-const gradle = fs.readFileSync(path.join(root, 'app/build.gradle'), 'utf8');\nconst version = gradle.match(/versionName ['"]([^'"]+)['"]/);\nconst validTag = version ? 'v' + version[1] : '';\nconst invalidTag = validTag ? validTag + '-wrong' : 'v-invalid';
+const gradle = fs.readFileSync(path.join(root, 'app/build.gradle'), 'utf8');
+const version = gradle.match(/versionName ['"]([^'"]+)['"]/);
+const validTag = version ? 'v' + version[1] : '';
+const invalidTag = validTag ? validTag + '-wrong' : 'v-invalid';
 const docs = fs.readFileSync(path.join(root, 'BUILD_APK_ON_GITHUB.md'), 'utf8');
 const checks = [
   ['release workflow calls version guard', workflow.includes('python3 verify_release_version.py')],
