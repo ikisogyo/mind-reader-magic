@@ -9,7 +9,7 @@ const checks=[
  ['heart tap reveals',html.includes('function heartAction(){if(pending&&!revealed)reveal();}')],
  ['result tap returns',html.includes('result.onclick=nextRound')],
  ['face-down sensor reveal',html.includes('faceDown=Math.abs(e.beta)>145')],
- ['face-up returns/listens',html.includes('if(revealed&&faceUp){nextRound();}')&&html.includes('startListen();')],
+ ['face-up returns',html.includes('if(specialOrientationActive&&revealed&&faceUp){nextRound();}')&&html.includes('load();renderSettings();updateCountDots();updateNetworkStatus();showMagic();startListen();')],
  ['five randomized reveal sound patterns',html.includes('function playRevealSound(){try{')&&html.includes('const patterns=[[880,1175,1568],[660,990,1320],[784,1047,1397],[523,784,1047,1568],[698,1047,1397]]')&&html.includes('patterns[Math.floor(Math.random()*patterns.length)]')],
  ['audio graceful fallback',html.includes('音声再生が使えなくても判定表示は続行')],
  ['speech bridge cue event',html.includes('mindmagic-cue-text')],
