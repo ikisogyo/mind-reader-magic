@@ -64,11 +64,19 @@ jobs:
           echo "verified=true" >> "$GITHUB_OUTPUT"
       - name: Run JavaScript regression tests (after APK build)
         run: |
-          set -e
+          set +e
+          failures=0
+          : > test-regression.log
           for test in tests/*.cjs; do
-            echo "== $test =="
-            node "$test"
+            echo "== $test ==" | tee -a test-regression.log
+            node "$test" 2>&1 | tee -a test-regression.log
+            status=${PIPESTATUS[0]}
+            if [ "$status" -ne 0 ]; then
+              failures=$((failures + 1))
+            fi
           done
+          echo "Failed test files: $failures" | tee -a test-regression.log
+          if [ "$failures" -ne 0 ]; then exit 1; fi
       - name: Upload build diagnostics on failure
         if: failure()
         uses: actions/upload-artifact@v4
@@ -76,6 +84,7 @@ jobs:
           name: mindmagic-build-diagnostics
           path: |
             build-debug.log
+            test-regression.log
             app/build/reports/**
           if-no-files-found: warn
           retention-days: 7
