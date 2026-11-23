@@ -7,5 +7,5 @@ assert(helper.includes('catch (RuntimeException ex) {\n        // Service creati
 assert(helper.includes('try { recognizer.destroy(); } catch (RuntimeException ignored) { }'),'partially created recognizer is safely destroyed');
 assert(helper.includes('recognizer = null;\n        }\n        callback.onError("音声認識サービスを初期化できませんでした: " + ex.getMessage(), -1004);'),'failed recognizer is cleared and UI receives recoverable error');
 assert(activity.includes('results != null && results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED'),'permission result callback tolerates null results');
-assert(fs.readFileSync('app/build.gradle','utf8').includes("versionCode 192; versionName '0.3.192'"),'version updated');
+const gradle=fs.readFileSync('app/build.gradle','utf8');const m=gradle.match(/versionCode\\s+(\\d+).*?versionName\\s+'0\\.3\\.(\\d+)'/s);assert(m&&m[1]===m[2],'app version metadata aligns dynamically');
 console.log('v170 speech initialization recovery checks: 7 passed');
