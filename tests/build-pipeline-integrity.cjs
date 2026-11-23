@@ -8,7 +8,7 @@ const upload = fs.readFileSync(path.join(root, 'upload-source-to-github.ps1'), '
 function assert(condition, message) { if (!condition) throw new Error(message); }
 assert(build.includes('workflow_dispatch:'), 'Build workflow must allow manual runs');
 assert(build.includes('pull_request:'), 'Build workflow must run for pull requests');
-assert(!build.includes('\n  push:'), 'Push-triggered builds must stay disabled during batched development');
+assert(build.includes('\n  push:\n    branches: [ main, master ]'), 'Main-branch pushes must trigger APK validation');
 assert(build.includes("gradle-version: '8.7'"), 'Build workflow Gradle version missing');
 assert(build.includes("'platforms;android-35'"), 'Android platform 35 must be installed in CI');
 assert(build.includes('gradle --no-daemon --stacktrace assembleDebug'), 'Debug APK build command missing');
