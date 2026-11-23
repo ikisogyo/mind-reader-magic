@@ -18,3 +18,14 @@ const checks=[
  ['speech status event',fs.readFileSync(__dirname+'/../app/src/main/assets/bridge-events.js','utf8').includes('mindmagic-speech-status')],
 ];for(const [n,ok] of checks)console.log(`${ok?'PASS':'FAIL'} ${n}`);console.log(`${checks.filter(c=>c[1]).length}/${checks.length} passed`);if(checks.some(c=>!c[1]))process.exit(1);
 const inline=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].pop()?.[1];new vm.Script(inline);console.log('PASS inline script syntax');
+// Behavioral tests for the actual parser helpers (not just source-string checks).
+const helpers=html.match(/function cleanItemName\(s\)[\\s\\S]*?function parseItemNames\(text\)[\\s\\S]*?\n(?=function |async function |const |let |window\.)/);
+if(!helpers)throw new Error('Parser helper extraction failed');
+const parserContext={};vm.runInNewContext(helpers[0]+';this.parseItemNames=parseItemNames;',parserContext);
+const parserCases=[
+ ['conjunctions', 'りんごとみかんとバナナ', ['りんご','みかん','バナナ']],
+ ['Japanese commas', 'りんご、みかん，バナナ', ['りんご','みかん','バナナ']],
+ ['prefix cleanup', 'ここにりんごとみかん', ['りんご','みかん']],
+ ['spaces', 'りんご みかん バナナ', ['りんご','みかん','バナナ']],
+];
+for(const [name,input,expected] of parserCases){const actual=parserContext.parseItemNames(input);const ok=JSON.stringify(actual)===JSON.stringify(expected);console.log((ok?'PASS':'FAIL')+' parser '+name+': '+JSON.stringify(actual));if(!ok)process.exit(1);}
