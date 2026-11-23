@@ -1,0 +1,11 @@
+const fs=require('fs'),assert=require('assert');
+const html=fs.readFileSync('app/src/main/assets/index.html','utf8');
+const change=html.match(/const change=s\.match[\s\S]*?\nif\(\/(?:ここに|品物は|があります|がある)\//);
+assert(change,'item-change command section exists');
+const block=change[0];
+assert(block.includes('const before={...data.items[idx};')===false,'backup syntax sanity');
+assert(block.includes('const before={...data.items[idx]};'),'entire item slot is backed up');
+assert(block.includes("data.items[idx].image='';"),'changing item name clears old image association');
+assert(block.includes('retrieveItemImage(to,idx);'),'changed item triggers matching image retrieval');
+assert(block.includes('data.items[idx]=before;'),'failed save restores old name and image');
+console.log('v200 item image reassociation checks: 5 passed');
