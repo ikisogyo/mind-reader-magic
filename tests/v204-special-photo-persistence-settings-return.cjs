@@ -4,7 +4,7 @@ assert(html.includes("const STORE='kokoromie_v148'"),'persistent storage key is 
 assert(html.includes('localStorage.setItem(STORE,JSON.stringify(data))'),'all app settings are saved to local storage');
 assert(html.includes("specialCue:typeof v.specialCue==='string'?v.specialCue:defaults.specialCue")&&html.includes("specialMessage:typeof v.specialMessage==='string'?v.specialMessage:defaults.specialMessage")&&html.includes("specialImage:typeof v.specialImage==='string'?v.specialImage:''"),'special cue, message, and photo restore from persisted data');
 assert(html.includes("const saved=commitImage(data,'specialImage',result)")&&html.includes("sp.src=data.specialImage||''"),'special photo selection commits to storage and updates preview');
-assert(html.includes('function showSettings(){stopListen();renderSettings();')&&html.includes("document.getElementById('settings').classList.add('active')"),'five-tap settings entry renders latest saved data');
-assert(html.includes('function showMagic(){document.getElementById(\'settings\').classList.remove(\'active\');document.getElementById(\'magic\').classList.add(\'active\');}'),'settings can return to magic screen');
+assert(/function showSettings\(\)\{[^}]*stopListen\(\)[^}]*renderSettings\(\)[^}]*document\.getElementById\('settings'\)\.classList\.add\('active'\)/.test(html),'five-tap settings entry stops listening and renders latest saved data');
+assert(html.includes("function showMagic(){document.getElementById('settings').classList.remove('active');document.getElementById('magic').classList.add('active');}"),'settings can return to magic screen');
 assert(html.includes('function startPerformance(){if(!saveSettings())return;showMagic();startListen();}'),'starting performance saves settings before returning to magic screen');
 console.log('v204 special photo persistence and settings re-entry: 7 checks passed');
