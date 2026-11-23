@@ -20,5 +20,7 @@ const namedNoImage=runReveal({name:'鍵',image:''},3);
 assert.strictEqual(namedNoImage.result.children[0].textContent,'鍵','configured item name remains fallback when image is absent');
 const blankNameWithImage=runReveal({name:'',image:'data:image/png;base64,abc'},1);
 assert.strictEqual(blankNameWithImage.result.children[0].tag,'img','configured image is rendered');
+assert.strictEqual(blankNameWithImage.result.children[0].className,'reveal itemFullscreen','normal item image must use fullscreen class');
+assert(blankNameWithImage.context.document.getElementById('magic').classList.added.includes('itemRevealMode'),'normal reveal hides heart screen behind fullscreen photo');
 assert.strictEqual(blankNameWithImage.result.children[1].textContent,'みえるかな','cue label is visible when image exists but item name is blank');
 console.log('v182 cue text fallback: 5 checks passed');
